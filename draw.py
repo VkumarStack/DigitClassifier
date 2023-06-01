@@ -1,6 +1,8 @@
 from tkinter import *
 from PIL import Image, ImageOps
-import Digit_Classifier
+from team5_final_project import Digit_Classifier5
+import torch
+import numpy as np
 
 root = Tk()
  
@@ -11,7 +13,8 @@ root.title(  "Paint App ")
 root.geometry("200x200")
 
 xPrev, yPrev = None, None
-model = Digit_Classifier.Model()
+model = Digit_Classifier5()
+model.load_state_dict(torch.load('./Weights/team5_final_weights.pth'))
 number = StringVar()
 number.set('')
 
@@ -35,10 +38,13 @@ def export( event ):
         w.postscript(file = "test.eps")
         img = Image.open("test.eps")
         img = img.resize((28, 28))
+        img.save("test.png")
         img = ImageOps.grayscale(img)
         img = ImageOps.invert(img)
-        img.save("test.png")
-        number.set(model.predict(img).item())
+        img = np.array(img)
+        img = torch.tensor(img).float().unsqueeze(0)
+        number.set(torch.argmax(model(img)).item())
+        # number.set(model.predict(img).item())
     elif event.keysym == "r" or event.keysym == "R":
         w.delete('all')
  

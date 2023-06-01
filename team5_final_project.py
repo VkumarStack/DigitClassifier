@@ -2,16 +2,12 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision
-import matplotlib.pyplot as plt
 import numpy as np
-from PIL import Image, ImageOps
+import matplotlib.pyplot as plt
 # This is your neural network class, so it must extend nn.Module
 # For your final submission you will be submitting this cell as its own file
 # REMEMBER TO REPLACE X IN THE CLASS NAME WITH YOUR TEAM NUMBER
-# This is your neural network class, so it must extend nn.Module
-# For your final submission you will be submitting this cell as its own file
-# REMEMBER TO REPLACE X IN THE CLASS NAME WITH YOUR TEAM NUMBER
-class Digit_Classifiertbd(nn.Module):
+class Digit_Classifier5(nn.Module):
   def __init__(self):
     # Handle some under-the-hood PyTorch stuff
     super().__init__()
@@ -32,6 +28,7 @@ class Digit_Classifiertbd(nn.Module):
     # 2. Consider normalization
     # 3. If you are getting errors look at your dimensions, dimension errors are very easy to make!
     # 4. CNN layers take in rectangular (or square) inputs and give rectangular (or square) outputs. Fully connected layers have input and output that are vectors, when you need to switch between the two consider using a flatten or reshape
+    x = x.view(x.size()[0], 1, 28, 28)
     x = self.relu(self.conv1(x))
     x = self.pool(x)
     x = self.relu(self.conv2(x))
@@ -43,13 +40,3 @@ class Digit_Classifiertbd(nn.Module):
     return x
   
   # Optional: any other member functions that you think would be helpful
-
-class Model:
-    def __init__(self):
-       self.model = Digit_Classifiertbd()
-       self.model.load_state_dict(torch.load('./Weights/teamtbd_final_weights.pth'))
-       self.model.eval()
-       self.convert_tensor = torchvision.transforms.ToTensor()
-
-    def predict(self, img):
-       return torch.argmax(self.model(torch.reshape(self.convert_tensor(img), (1, 1, 28, 28))))
